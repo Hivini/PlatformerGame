@@ -4,7 +4,7 @@ import javax.swing.*;
 
 public class GameLauncher {
 
-    GameLauncher() {
+    private GameLauncher() {
         GameWindow window = new GameWindow();
         window.setVisible(true);
         window.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
