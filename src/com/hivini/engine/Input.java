@@ -30,13 +30,9 @@ public class Input implements KeyListener, MouseListener, MouseMotionListener, M
     }
 
     public void update() {
-        for (int i = 0; i < NUM_KEYS; i++) {
-            keysLast[i] = keys[i];
-        }
-
-        for (int i = 0; i < NUM_BUTTONS; i++) {
-            buttonsLast[i] = buttons[i];
-        }
+        scroll = 0;
+        System.arraycopy(keys, 0, keysLast, 0, NUM_KEYS);
+        System.arraycopy(buttons, 0, buttonsLast, 0, NUM_BUTTONS);
     }
 
     public boolean isKey(int keyCode) {
@@ -51,6 +47,18 @@ public class Input implements KeyListener, MouseListener, MouseMotionListener, M
         return keys[keyCode] && !keysLast[keyCode];
     }
 
+    public boolean isButton(int button) {
+        return buttons[button];
+    }
+
+    public boolean isButtonUp(int button) {
+        return !buttons[button] && buttonsLast[button];
+    }
+
+    public boolean isButtonDown(int button) {
+        return buttons[button] && !buttonsLast[button];
+    }
+
     @Override
     public void keyTyped(KeyEvent e) {
 
@@ -63,7 +71,7 @@ public class Input implements KeyListener, MouseListener, MouseMotionListener, M
 
     @Override
     public void keyReleased(KeyEvent e) {
-
+        keys[e.getKeyCode()] = false;
     }
 
     @Override
@@ -78,7 +86,7 @@ public class Input implements KeyListener, MouseListener, MouseMotionListener, M
 
     @Override
     public void mouseReleased(MouseEvent e) {
-        buttons[e.getButton()] = true;
+        buttons[e.getButton()] = false;
     }
 
     @Override

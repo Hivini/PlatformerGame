@@ -29,6 +29,8 @@ public class Window {
         frame.setLocationRelativeTo(null);
         frame.setResizable(false);
         frame.setVisible(true);
+        frame.setFocusable(true);
+        frame.requestFocus();
 
         canvas.createBufferStrategy(2);
         bs = canvas.getBufferStrategy();

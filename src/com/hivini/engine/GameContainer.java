@@ -1,10 +1,14 @@
 package com.hivini.engine;
 
+import java.awt.event.KeyEvent;
+import java.awt.event.MouseEvent;
+
 public class GameContainer implements Runnable {
 
     private Thread thread;
     private Window window;
     private Renderer renderer;
+    private Input input;
 
     private int width = 320, height = 240;
     private float scale = 3f;
@@ -22,6 +26,7 @@ public class GameContainer implements Runnable {
         window = new Window(this);
         renderer = new Renderer(this);
         thread = new Thread(this);
+        input = new Input(this);
         thread.run();
     }
 
@@ -55,7 +60,11 @@ public class GameContainer implements Runnable {
             while (unprocessedTime >= UPDATE_CAP) {
                 unprocessedTime -= UPDATE_CAP;
                 render = true;
+
                 // TODO: Update Game
+                System.out.println("x: " + input.getMouseX() + " y: " + input.getMouseY());
+                input.update();
+
                 if (frameTime >= 1.0) {
                     frameTime = 0;
                     fps = frames;
