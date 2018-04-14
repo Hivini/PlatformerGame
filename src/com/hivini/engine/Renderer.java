@@ -24,8 +24,8 @@ public class Renderer {
     }
 
     public void setPixel(int x, int y, int value) {
-        // The value 0xffff0ff is the alpha, invisible color!
-        if ((x < 0 || x >= pW || y < 0 || y >= pH) || value == -65281) {
+        // The value >> 24 & 0xff is for the alpha
+        if ((x < 0 || x >= pW || y < 0 || y >= pH) || ((value >> 24) & 0xff) == 0) {
             return;
         }
         p[x + y * pW] = value;
@@ -96,6 +96,44 @@ public class Renderer {
         for (int y = newY; y < newHeight; y++) {
             for (int x = newX; x < newWidth; x++) {
                 setPixel(x + offX, y + offY, image.getP()[(x + tileX * image.getTileW()) + (y + tileY + image.getTileH()) * image.getWidth()]);
+            }
+        }
+    }
+
+    public void drawRect(int offX, int offY, int width, int height, int color) {
+
+        for (int y = 0; y <= height; y++) {
+            setPixel(offX, y + offY, color);
+            setPixel(offX + width, y + offY, color);
+
+        }
+        for (int x = 0; x <= width; x++) {
+            setPixel(x + offY, offY, color);
+            setPixel(x + offY, offY + height, color);
+        }
+    }
+
+    public void drawFillRect(int offX, int offY, int width, int height, int color) {
+
+        // Testers for prevent unnecesary renders
+        if (offX < -width) return;
+        if (offY < -height) return;
+        if (offX >= pW) return;
+        if (offY >= pH) return;
+
+        int newX = 0;
+        int newY = 0;
+        int newWidth = width;
+        int newHeight = height;
+
+        if (offX < 0) newX -= offX;
+        if (offY < 0) newY -= offY;
+        if (newWidth + offX > pW) newWidth -= newWidth + offX - pW;
+        if (newHeight + offY > pH) newHeight -= newHeight + offY - pH;
+
+        for (int y = newY; y <= newHeight; y++) {
+            for (int x = newX; x <= newWidth; x++) {
+                setPixel(x + offX, y + offY, color);
             }
         }
     }
