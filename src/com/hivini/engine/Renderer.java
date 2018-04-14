@@ -8,6 +8,8 @@ public class Renderer {
 
     private int pW, pH;
     private int[] p;
+    private int[] zBuffer;
+    private int zDepth = 0;
 
     private Font font = Font.STANDARD;
 
@@ -15,20 +17,38 @@ public class Renderer {
         pW = gc.getWidth();
         pH = gc.getHeight();
         p = ((DataBufferInt)gc.getWindow().getImage().getRaster().getDataBuffer()).getData();
+        zBuffer = new int[p.length];
     }
 
     public void clear() {
         for (int i = 0; i < p.length; i++) {
             p[i] = 0;
+            zBuffer[i] = 0;
         }
     }
 
     public void setPixel(int x, int y, int value) {
+        int alpha = (value >> 24) & 0xff;
         // The value >> 24 & 0xff is for the alpha
-        if ((x < 0 || x >= pW || y < 0 || y >= pH) || ((value >> 24) & 0xff) == 0) {
+        if ((x < 0 || x >= pW || y < 0 || y >= pH) || alpha == 0) {
             return;
         }
-        p[x + y * pW] = value;
+
+        if (zBuffer[x + y * pW] > zDepth) return;
+        if (alpha == 255) {
+            p[x + y * pW] = value;
+        }
+        else {
+            int color = 0;
+            int pixelColor = p[x + y * pW];
+
+            // Getting the colors
+            int newRed = ((pixelColor >> 16) & 0xff) - (int)((((pixelColor >> 16) & 0xff) - ((value >> 16) & 0xff)) * (alpha / 255f));
+            int newGreen = ((pixelColor >> 8) & 0xff) - (int)((((pixelColor >> 8) & 0xff) - ((value >> 8) & 0xff)) * (alpha / 255f));
+            int newBlue = (pixelColor & 0xff) - (int)(((pixelColor & 0xff) - (value & 0xff)) * (alpha / 255f));
+
+            p[x + y * pW] = (255 << 24 | newRed << 16 | newGreen << 8 | newBlue);
+        }
     }
 
     public void drawText(String text, int offX, int offY, int color) {
@@ -138,4 +158,11 @@ public class Renderer {
         }
     }
 
+    public int getzDepth() {
+        return zDepth;
+    }
+
+    public void setzDepth(int zDepth) {
+        this.zDepth = zDepth;
+    }
 }
