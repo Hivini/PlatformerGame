@@ -7,42 +7,34 @@ import com.hivini.engine.audio.SoundClip;
 import com.hivini.engine.gfx.*;
 
 import java.awt.event.KeyEvent;
+import java.util.ArrayList;
 
 public class GameManager extends AbstractGame {
 
-    private ImageTile image;
-    private SoundClip clip;
-    private Image image2;
-    private Image image3;
+    private ArrayList<GameObject> objects = new ArrayList<>();
 
     public GameManager() {
-        image = new ImageTile("/test.png", 16, 16);
-        clip = new SoundClip("/audio/reload.wav");
-        image2 = new Image("/test.png");
-        image3 = new Image("/alphatest.png");
+
     }
 
     @Override
     public void update(GameContainer gc, float dt) {
-        if (gc.getInput().isKeyDown(KeyEvent.VK_A)) {
-            clip.play();
-        }
-
-        temp += dt;
-
-        if (temp > 3) {
-            temp = 0;
+        for (int i = 0; i < objects.size(); i ++) {
+            objects.get(i).update(gc, dt);
+            if (objects.get(i).isDead()) {
+                objects.remove(i);
+                // Because the array shifts all the data when is removed
+                i--;
+            }
         }
     }
 
-    private float temp = 0;
-
     @Override
     public void render(GameContainer gc, Renderer r) {
-        // r.drawImageTile(image, gc.getInput().getMouseX() - 8, gc.getInput().getMouseY() - 16, (int)temp, 0);
-        // r.drawFillRect(gc.getInput().getMouseX() - 16, gc.getInput().getMouseY() - 16, 32, 32, 0xffffccff);
-        r.drawImage(image2, 10, 10);
-        r.drawImage(image3, gc.getInput().getMouseX(), gc.getInput().getMouseY());
+        for (GameObject obj : objects) {
+            obj.render(gc, r);
+        }
+
     }
 
     public static void main(String[] args) {

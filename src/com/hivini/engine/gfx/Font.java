@@ -2,7 +2,7 @@ package com.hivini.engine.gfx;
 
 public class Font {
 
-    public static final Font STANDARD = new Font("/standardfont.png");
+    public static final Font STANDARD = new Font("/standardfont2.png");
 
     private Image fontImage;
     private int[] offsets;
@@ -11,8 +11,8 @@ public class Font {
     public Font(String path) {
         fontImage = new Image(path);
 
-        offsets = new int[59];
-        widths = new int[59];
+        offsets = new int[256];
+        widths = new int[256];
 
         int unicode = 0;
         for (int i=0; i < fontImage.getWidth(); i++) {
