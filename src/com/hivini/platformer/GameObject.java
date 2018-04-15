@@ -7,10 +7,11 @@ public abstract class GameObject {
 
     // Identifing object in an array
     protected String tag;
-    protected int positionX, positionY, width, height;
+    protected float positionX, positionY;
+    protected int width, height;
     protected boolean dead = false;
 
-    public abstract void update(GameContainer gc, float dt);
+    public abstract void update(GameContainer gc, GameManager gm, float dt);
     public abstract void render(GameContainer gc, Renderer r);
 
     public String getTag() {
@@ -21,19 +22,19 @@ public abstract class GameObject {
         this.tag = tag;
     }
 
-    public int getPositionX() {
+    public float getPositionX() {
         return positionX;
     }
 
-    public void setPositionX(int positionX) {
+    public void setPositionX(float positionX) {
         this.positionX = positionX;
     }
 
-    public int getPositionY() {
+    public float getPositionY() {
         return positionY;
     }
 
-    public void setPositionY(int positionY) {
+    public void setPositionY(float positionY) {
         this.positionY = positionY;
     }
 
