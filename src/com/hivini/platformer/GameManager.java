@@ -3,23 +3,31 @@ package com.hivini.platformer;
 import com.hivini.engine.AbstractGame;
 import com.hivini.engine.GameContainer;
 import com.hivini.engine.Renderer;
-import com.hivini.engine.audio.SoundClip;
 import com.hivini.engine.gfx.*;
+import com.hivini.platformer.objects.GameObject;
+import com.hivini.platformer.objects.Platform;
+import com.hivini.platformer.objects.Player;
 
-import java.awt.event.KeyEvent;
 import java.util.ArrayList;
 
 public class GameManager extends AbstractGame {
 
     public static final int TS = 16;
 
+    private Image skyImage = new Image("/skybackground.png");
+    private Image levelImage = new Image("/levelscenary.png");
+
+    private ArrayList<GameObject> objects = new ArrayList<>();
+    private Camera camera;
+
     private boolean[] colission;
     private int levelWidth, levelHeight;
-    private ArrayList<GameObject> objects = new ArrayList<>();
 
     public GameManager() {
         objects.add(new Player(3, 4));
+        objects.add(new Platform());
         loadLevel("/level1.png");
+        camera = new Camera("Player");
     }
 
     @Override
@@ -37,10 +45,19 @@ public class GameManager extends AbstractGame {
                 i--;
             }
         }
+
+        Physics.update();
+        camera.update(gc, this, dt);
     }
 
     @Override
     public void render(GameContainer gc, Renderer r) {
+        camera.render(r);
+
+        r.drawImage(skyImage, 0, 0);
+        r.drawImage(levelImage, 0, 0);
+
+        /* Squares test
         for (int y = 0; y < levelHeight; y++) {
             for (int x = 0; x < levelWidth; x++) {
                 if (colission[x + y * levelWidth])
@@ -48,7 +65,7 @@ public class GameManager extends AbstractGame {
                 else
                     r.drawFillRect(x * TS, y * TS, TS, TS, 0xfff9f9f9);
             }
-        }
+        } */
 
         for (GameObject obj : objects) {
             obj.render(gc, r);
@@ -77,6 +94,25 @@ public class GameManager extends AbstractGame {
         if (x < 0 || x >= levelWidth || y < 0 || y >= levelHeight)
             return true;
         return colission[x + y * levelWidth];
+    }
+
+    public void addObject(GameObject object) {
+        objects.add(object);
+    }
+
+    public GameObject getObject(String tag) {
+        for (int i = 0; i < objects.size(); i++) {
+            if (objects.get(i).getTag().equals(tag)) return objects.get(i);
+        }
+        return null;
+    }
+
+    public int getLevelWidth() {
+        return levelWidth;
+    }
+
+    public int getLevelHeight() {
+        return levelHeight;
     }
 
     public static void main(String[] args) {

@@ -72,7 +72,6 @@ public class GameContainer implements Runnable {
                     frameTime = 0;
                     fps = frames;
                     frames = 0;
-                    System.out.println("FPS: " + fps);
                 }
             }
 
@@ -80,7 +79,9 @@ public class GameContainer implements Runnable {
                 renderer.clear();
                 game.render(this, renderer);
                 renderer.process();
-                renderer.drawText("FPS:" + fps, 0, 0, 0xff00ffff);
+                renderer.setCameraX(0);
+                renderer.setCameraY(0);
+                renderer.drawText("FPS:" + fps, 0, 0, 0xfff4d03f);
                 window.update();
                 frames++;
             } else {

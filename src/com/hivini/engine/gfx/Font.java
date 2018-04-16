@@ -2,7 +2,7 @@ package com.hivini.engine.gfx;
 
 public class Font {
 
-    public static final Font STANDARD = new Font("/standardfont2.png");
+    public static final Font STANDARD = new Font("/standardfont.png");
 
     private Image fontImage;
     private int[] offsets;

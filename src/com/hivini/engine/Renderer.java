@@ -22,6 +22,7 @@ public class Renderer {
 
     private int zDepth = 0;
     private boolean processing = false;
+    private int cameraX, cameraY;
 
     public Renderer(GameContainer gc) {
         pW = gc.getWidth();
@@ -79,7 +80,9 @@ public class Renderer {
     }
 
     public void setPixel(int x, int y, int value) {
+
         int alpha = (value >> 24) & 0xff;
+
         // The value >> 24 & 0xff is for the alpha
         if ((x < 0 || x >= pW || y < 0 || y >= pH) || alpha == 0) {
             return;
@@ -108,6 +111,7 @@ public class Renderer {
     }
 
     public void setLightMap(int x, int y, int value) {
+
         if ((x < 0 || x >= pW || y < 0 || y >= pH)) return;
 
         // Use the maximum value of the RGB to calculate and blend
@@ -122,6 +126,10 @@ public class Renderer {
     }
 
     public void drawText(String text, int offX, int offY, int color) {
+
+        offX -= cameraX;
+        offY -= cameraY;
+
         int offset = 0;
 
         for (int i = 0; i < text.length(); i++) {
@@ -140,6 +148,9 @@ public class Renderer {
     }
 
     public void drawImage(Image image, int offX, int offY) {
+
+        offX -= cameraX;
+        offY -= cameraY;
 
         if (image.isAlpha() && !processing) {
             imageRequest.add(new ImageRequest(image, zDepth, offX, offY));
@@ -171,6 +182,9 @@ public class Renderer {
 
     public void drawImageTile(ImageTile image, int offX, int offY, int tileX, int tileY) {
 
+        offX -= cameraX;
+        offY -= cameraY;
+
         if (image.isAlpha() && !processing) {
             imageRequest.add(new ImageRequest(image.getTileImage(tileX, tileY), zDepth, offX, offY));
             return;
@@ -194,12 +208,14 @@ public class Renderer {
 
         for (int y = newY; y < newHeight; y++) {
             for (int x = newX; x < newWidth; x++) {
-                setPixel(x + offX, y + offY, image.getP()[(x + tileX * image.getTileW()) + (y + tileY + image.getTileH()) * image.getWidth()]);
+                setPixel(x + offX, y + offY, image.getP()[(x + tileX * image.getTileW()) + (y + tileY * image.getTileH()) * image.getWidth()]);
             }
         }
     }
 
     public void drawRect(int offX, int offY, int width, int height, int color) {
+        offX -= cameraX;
+        offY -= cameraY;
 
         for (int y = 0; y <= height; y++) {
             setPixel(offX, y + offY, color);
@@ -207,12 +223,15 @@ public class Renderer {
 
         }
         for (int x = 0; x <= width; x++) {
-            setPixel(x + offY, offY, color);
-            setPixel(x + offY, offY + height, color);
+            setPixel(x + offX, offY, color);
+            setPixel(x + offX, offY + height, color);
         }
     }
 
     public void drawFillRect(int offX, int offY, int width, int height, int color) {
+
+        offX -= cameraX;
+        offY -= cameraY;
 
         // Testers for prevent unnecesary renders
         if (offX < -width) return;
@@ -220,18 +239,8 @@ public class Renderer {
         if (offX >= pW) return;
         if (offY >= pH) return;
 
-        int newX = 0;
-        int newY = 0;
-        int newWidth = width;
-        int newHeight = height;
-
-        if (offX < 0) newX -= offX;
-        if (offY < 0) newY -= offY;
-        if (newWidth + offX > pW) newWidth -= newWidth + offX - pW;
-        if (newHeight + offY > pH) newHeight -= newHeight + offY - pH;
-
-        for (int y = newY; y < newHeight; y++) {
-            for (int x = newX; x < newWidth; x++) {
+        for (int y = 0; y < height; y++) {
+            for (int x = 0; x < width; x++) {
                 setPixel(x + offX, y + offY, color);
             }
         }
@@ -296,5 +305,21 @@ public class Renderer {
 
     public void setAmbientColor(int ambientColor) {
         this.ambientColor = ambientColor;
+    }
+
+    public int getCameraX() {
+        return cameraX;
+    }
+
+    public void setCameraX(int cameraX) {
+        this.cameraX = cameraX;
+    }
+
+    public int getCameraY() {
+        return cameraY;
+    }
+
+    public void setCameraY(int cameraY) {
+        this.cameraY = cameraY;
     }
 }
