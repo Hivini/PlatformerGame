@@ -15,18 +15,19 @@ public class Platform extends GameObject {
         this.height = 16;
         this.padding = 0;
         this.paddingTop = 0;
-        this.positionX = 176;
-        this.positionY = 160;
+        this.positionX = 247;
+        this.positionY = 190;
 
         this.addComponent(new AABBComponent(this));
     }
 
-    // float temp = 0;
+    float temp = 0;
 
     @Override
     public void update(GameContainer gc, GameManager gm, float dt) {
-        // temp += dt;
-        // positionY += Math.cos(temp) * 2;
+        temp += dt;
+        positionX += Math.cos(temp) * 2;
+
 
         this.updateComponents(gc, gm, dt);
     }

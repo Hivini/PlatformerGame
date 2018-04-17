@@ -54,8 +54,8 @@ public class SoundClip {
     }
 
     public void loop() {
-        clip.loop(Clip.LOOP_CONTINUOUSLY);
         play();
+        clip.loop(Clip.LOOP_CONTINUOUSLY);
     }
 
     public void setVolume(float value) {

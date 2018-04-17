@@ -3,6 +3,7 @@ package com.hivini.platformer;
 import com.hivini.engine.AbstractGame;
 import com.hivini.engine.GameContainer;
 import com.hivini.engine.Renderer;
+import com.hivini.engine.audio.SoundClip;
 import com.hivini.engine.gfx.*;
 import com.hivini.platformer.objects.GameObject;
 import com.hivini.platformer.objects.Platform;
@@ -14,8 +15,11 @@ public class GameManager extends AbstractGame {
 
     public static final int TS = 16;
 
-    private Image skyImage = new Image("/skybackground.png");
-    private Image levelImage = new Image("/levelscenary.png");
+    private Image levelImage = new Image("/world11scenary.png");
+    //private Image skyBackground = new Image("/skybackground.png");
+    //private Image levelImage = new Image("/levelscenary.png");
+
+    private SoundClip backgroundMusic = new SoundClip("/audio/backgroundmusic.wav");
 
     private ArrayList<GameObject> objects = new ArrayList<>();
     private Camera camera;
@@ -24,10 +28,11 @@ public class GameManager extends AbstractGame {
     private int levelWidth, levelHeight;
 
     public GameManager() {
-        objects.add(new Player(3, 4));
+        objects.add(new Player(4, 4));
         objects.add(new Platform());
-        loadLevel("/level1.png");
+        loadLevel("/world11.png");
         camera = new Camera("Player");
+        backgroundMusic.loop();
     }
 
     @Override
@@ -54,10 +59,9 @@ public class GameManager extends AbstractGame {
     public void render(GameContainer gc, Renderer r) {
         camera.render(r);
 
-        r.drawImage(skyImage, 0, 0);
         r.drawImage(levelImage, 0, 0);
 
-        /* Squares test
+        /*
         for (int y = 0; y < levelHeight; y++) {
             for (int x = 0; x < levelWidth; x++) {
                 if (colission[x + y * levelWidth])
@@ -65,7 +69,7 @@ public class GameManager extends AbstractGame {
                 else
                     r.drawFillRect(x * TS, y * TS, TS, TS, 0xfff9f9f9);
             }
-        } */
+        }*/
 
         for (GameObject obj : objects) {
             obj.render(gc, r);

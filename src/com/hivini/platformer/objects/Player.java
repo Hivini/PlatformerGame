@@ -2,6 +2,7 @@ package com.hivini.platformer.objects;
 
 import com.hivini.engine.GameContainer;
 import com.hivini.engine.Renderer;
+import com.hivini.engine.audio.SoundClip;
 import com.hivini.engine.gfx.ImageTile;
 import com.hivini.platformer.GameManager;
 import com.hivini.platformer.components.AABBComponent;
@@ -11,6 +12,7 @@ import java.awt.event.KeyEvent;
 public class Player extends GameObject {
 
     private ImageTile playerSprite = new ImageTile("/testcharacter.png", 16, 16);
+    private SoundClip playerJumpSound = new SoundClip("/audio/smalljump.wav");
 
     private int direction = 0;
     private float animation = 0;
@@ -19,9 +21,9 @@ public class Player extends GameObject {
     private float offX, offY;
 
     private float speed = 100;
-    private float fallSpeed = 10;
+    private float fallSpeed = 8;
     private float fallDistance = 0;
-    private float jump = -4;
+    private float jump = -4.2f; // Change this to 4
     private boolean isOnGround = false;
     private boolean isOnGroundLast = false;
 
@@ -90,7 +92,17 @@ public class Player extends GameObject {
 
         if (gc.getInput().isKeyDown(KeyEvent.VK_W) && isOnGround) {
             fallDistance = jump;
+            playerJumpSound.play();
             isOnGround = false;
+        }
+
+        if (gc.getInput().isKey(KeyEvent.VK_N)) {
+            speed = 150;
+            jump = -5;
+            animation *= 1.05;
+        } else {
+            speed = 100;
+            jump = -4.2f;
         }
 
         offY += fallDistance;
@@ -153,7 +165,7 @@ public class Player extends GameObject {
     public void render(GameContainer gc, Renderer r) {
         r.drawImageTile(playerSprite, (int)positionX, (int)positionY, (int)animation, direction);
         //r.drawFillRect((int)positionX, (int)positionY, width, height, 0xff00ff00);
-        this.renderComponents(gc, r);
+        //this.renderComponents(gc, r);
     }
 
     @Override

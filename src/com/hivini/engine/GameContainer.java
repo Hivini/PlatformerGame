@@ -52,7 +52,7 @@ public class GameContainer implements Runnable {
         game.init(this);
 
         while (running) {
-            render = false;
+            render = false; // Change this to show all the frames
             firstTime = System.nanoTime() / 1000000000.0;
             passedTime = firstTime - lastTime;
             lastTime = firstTime;
